@@ -14,7 +14,7 @@
  */
 package grails.plugin.mongogee
 
-import grails.plugin.mongogee.exception.MongoSeaException
+import grails.plugin.mongogee.exception.MongogeeException
 import grails.plugins.Plugin
 import groovy.util.logging.Slf4j
 
@@ -63,18 +63,18 @@ class MongogeeGrailsPlugin extends Plugin {
 
     void doWithDynamicMethods() {
 
-        def mongoSeaServiceBean = applicationContext.mongoSeaService
+        def mongogeeServiceBean = applicationContext.mongogeeService
         def enabledValue = grailsApplication.config.mongoSea.changeEnabled.toString()
         if (enabledValue) {
-            mongoSeaServiceBean.changeEnabled = enabledValue.toBoolean()
+            mongogeeServiceBean.changeEnabled = enabledValue.toBoolean()
         }
-        log.info "set mongoSeaService.changeEnabled = ${mongoSeaServiceBean.changeEnabled}"
+        log.info "set mongogeeService.changeEnabled = ${mongogeeServiceBean.changeEnabled}"
 
         def continueWithErrorValue = grailsApplication.config.mongoSea.continueWithError.toString()
         if (continueWithErrorValue) {
-            mongoSeaServiceBean.continueWithError = continueWithErrorValue.toBoolean()
+            mongogeeServiceBean.continueWithError = continueWithErrorValue.toBoolean()
         }
-        log.info "set mongoSeaService.continueWithError = ${mongoSeaServiceBean.continueWithError}"
+        log.info "set mongogeeService.continueWithError = ${mongogeeServiceBean.continueWithError}"
 
         def mongoDbUrl = grailsApplication.config.grails.mongodb.url.toString()
         if (mongoDbUrl) {
@@ -83,17 +83,17 @@ class MongogeeGrailsPlugin extends Plugin {
                 databaseName = mongoDbUrl.split('/')[-1]
             }
             if (databaseName) {
-                mongoSeaServiceBean.db = applicationContext.mongo.getDB(databaseName)
-                mongoSeaServiceBean.mongoDatabase = applicationContext.mongo.getDatabase(databaseName)
+                mongogeeServiceBean.db = applicationContext.mongo.getDB(databaseName)
+                mongogeeServiceBean.mongoDatabase = applicationContext.mongo.getDatabase(databaseName)
             }
         }
-        log.info "set mongoSeaService mongoDbUrl = ${mongoDbUrl}"
+        log.info "set mongogeeService mongoDbUrl = ${mongoDbUrl}"
 
-        mongoSeaServiceBean.changeLogsScanPackage = grailsApplication.config.mongoSea.changeLogsScanPackage.toString()
-        if (!mongoSeaServiceBean.changeLogsScanPackage) {
-            throw new MongoSeaException('changeLogsScanPackage value not set')
+        mongogeeServiceBean.changeLogsScanPackage = grailsApplication.config.mongoSea.changeLogsScanPackage.toString()
+        if (!mongogeeServiceBean.changeLogsScanPackage) {
+            throw new MongogeeException('changeLogsScanPackage value not set')
         }
-        log.info "set mongoSeaService.changeLogsScanPackage = ${mongoSeaServiceBean.changeLogsScanPackage}"
+        log.info "set mongogeeService.changeLogsScanPackage = ${mongogeeServiceBean.changeLogsScanPackage}"
 
     }
 

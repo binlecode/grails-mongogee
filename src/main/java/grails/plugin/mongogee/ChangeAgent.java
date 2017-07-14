@@ -1,6 +1,6 @@
 package grails.plugin.mongogee;
 
-import grails.plugin.mongogee.exception.MongoSeaChangeSetException;
+import grails.plugin.mongogee.exception.MongogeeChangeSetException;
 import grails.util.Environment;
 import org.reflections.Reflections;
 
@@ -34,7 +34,7 @@ public class ChangeAgent {
         return filteredChangeLogs;
     }
 
-    public List<Method> fetchChangeSets(final Class<?> type) throws MongoSeaChangeSetException {
+    public List<Method> fetchChangeSets(final Class<?> type) throws MongogeeChangeSetException {
         final List<Method> changeSets = filterChangeSetAnnotation(asList(type.getDeclaredMethods()));
         final List<Method> filteredChangeSets = (List<Method>) filterByActiveGrailsEnvironment(changeSets);
 
@@ -75,14 +75,14 @@ public class ChangeAgent {
         return filtered;
     }
 
-    private List<Method> filterChangeSetAnnotation(List<Method> allMethods) throws MongoSeaChangeSetException {
+    private List<Method> filterChangeSetAnnotation(List<Method> allMethods) throws MongogeeChangeSetException {
         final Set<String> changeSetIds = new HashSet<>();
         final List<Method> changeSetMethods = new ArrayList<>();
         for (final Method method : allMethods) {
             if (method.isAnnotationPresent(ChangeSet.class)) {
                 String id = method.getAnnotation(ChangeSet.class).id();
                 if (changeSetIds.contains(id)) {
-                    throw new MongoSeaChangeSetException(String.format("Duplicated changeSet id found: '%s'", id));
+                    throw new MongogeeChangeSetException(String.format("Duplicated changeSet id found: '%s'", id));
                 }
                 changeSetIds.add(id);
                 changeSetMethods.add(method);

@@ -3,7 +3,7 @@ package grails.plugin.mongogee
  * Created by binle on 7/7/17.
  */
 @ChangeLog(order = '001')
-class MongoSeaTestChangeLog {
+class MongogeeTestChangeLog {
 
     @ChangeSet(author = "testuser", id = "test1", order = "01")
     void testChangeSet1() {

@@ -1,18 +1,18 @@
 package grails.plugin.mongogee
 
-import grails.plugin.mongogee.exception.MongoSeaException
+import grails.plugin.mongogee.exception.MongogeeException
 import grails.test.mixin.Mock
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import spock.lang.Specification
 
 @Mock(ChangeLock)
-class MongoSeaServiceSpec extends Specification {
+class MongogeeServiceSpec extends Specification {
     static Logger log = LoggerFactory.getLogger(this.class)
-    MongoSeaService mongoSeaService
+    MongogeeService mongogeeService
 
     def setup() {
-        mongoSeaService = new MongoSeaService()
+        mongogeeService = new MongogeeService()
     }
 
     def cleanup() {
@@ -20,43 +20,43 @@ class MongoSeaServiceSpec extends Specification {
 
     void "test enabled flag"() {
         setup:
-        mongoSeaService.metaClass.executeMigration = { ->
+        mongogeeService.metaClass.executeMigration = { ->
             log.info 'mock executeMigration() => true'
             return true
         }
         when: 'enabled is set to false'
-        mongoSeaService.changeEnabled = false
-        def result = mongoSeaService.execute()
+        mongogeeService.changeEnabled = false
+        def result = mongogeeService.execute()
         then: 'execution is skipped, returning false'
         !result
 
         when: 'enabled is set to true'
-        mongoSeaService.changeEnabled = true
-        result = mongoSeaService.execute()
+        mongogeeService.changeEnabled = true
+        result = mongogeeService.execute()
         then: 'execution is carried, returning true'
         result
     }
 
     void "test continueWithError flag"() {
         setup:
-        mongoSeaService.changeEnabled = true
-        mongoSeaService.metaClass.executeMigration = { ->
+        mongogeeService.changeEnabled = true
+        mongogeeService.metaClass.executeMigration = { ->
             log.info 'mock executeMigration() => throw exception'
-            throw new MongoSeaException("Test exception for MongoSeaService#executeMigration")
+            throw new MongogeeException("Test exception for MongogeeService#executeMigration")
         }
         when:
-        mongoSeaService.continueWithError = true
-        def result = mongoSeaService.execute()
+        mongogeeService.continueWithError = true
+        def result = mongogeeService.execute()
         then:
-        notThrown(MongoSeaException)
+        notThrown(MongogeeException)
         result != null
         result == false
 
         when: 'continueWithError is set to false'
-        mongoSeaService.continueWithError = false
-        def result2 = mongoSeaService.execute()
+        mongogeeService.continueWithError = false
+        def result2 = mongogeeService.execute()
         then: 'exception is thrown, and no return'
-        thrown(MongoSeaException)
+        thrown(MongogeeException)
         result2 == null
     }
 

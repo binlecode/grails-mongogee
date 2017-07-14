@@ -3,15 +3,15 @@ package grails.plugin.mongogee
 import com.mongodb.DB
 import com.mongodb.MongoClient
 import com.mongodb.client.MongoDatabase
-import grails.plugin.mongogee.exception.MongoSeaChangeSetException
-import grails.plugin.mongogee.exception.MongoSeaException
+import grails.plugin.mongogee.exception.MongogeeChangeSetException
+import grails.plugin.mongogee.exception.MongogeeException
 import groovy.util.logging.Slf4j
 
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 
 @Slf4j
-class MongoSeaService {
+class MongogeeService {
     def grailsApplication  // autowired by Grails
     def mongo  // autowired by Grails
 
@@ -61,7 +61,7 @@ class MongoSeaService {
 
         if (errMsg) {
             if (!continueWithError) {
-                throw new MongoSeaException(errMsg)
+                throw new MongogeeException(errMsg)
             }
             return false
         } else {
@@ -80,14 +80,14 @@ class MongoSeaService {
                 }
             }
         } catch (NoSuchMethodException e) {
-            throw new MongoSeaException(e.getMessage(), e)
+            throw new MongogeeException(e.getMessage(), e)
         } catch (IllegalAccessException e) {
-            throw new MongoSeaException(e.getMessage(), e)
+            throw new MongogeeException(e.getMessage(), e)
         } catch (InvocationTargetException e) {
             Throwable targetException = e.getTargetException()
-            throw new MongoSeaException(targetException.getMessage(), e)
+            throw new MongogeeException(targetException.getMessage(), e)
         } catch (InstantiationException e) {
-            throw new MongoSeaException(e.getMessage(), e)
+            throw new MongogeeException(e.getMessage(), e)
         }
     }
 
@@ -151,7 +151,7 @@ class MongoSeaService {
             return changeSetMethod.invoke(changeLogInstance)
 
         } else {
-            throw new MongoSeaChangeSetException("ChangeSet method ${changeSetMethod.getName()} has wrong arguments list. Please see docs for more info!")
+            throw new MongogeeChangeSetException("ChangeSet method ${changeSetMethod.getName()} has wrong arguments list. Please see docs for more info!")
         }
     }
 

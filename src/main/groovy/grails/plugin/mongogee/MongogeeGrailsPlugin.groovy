@@ -64,13 +64,13 @@ class MongogeeGrailsPlugin extends Plugin {
     void doWithDynamicMethods() {
 
         def mongogeeServiceBean = applicationContext.mongogeeService
-        def enabledValue = grailsApplication.config.mongoSea.changeEnabled.toString()
+        def enabledValue = grailsApplication.config.mongogee.changeEnabled.toString()
         if (enabledValue) {
             mongogeeServiceBean.changeEnabled = enabledValue.toBoolean()
         }
         log.info "set mongogeeService.changeEnabled = ${mongogeeServiceBean.changeEnabled}"
 
-        def continueWithErrorValue = grailsApplication.config.mongoSea.continueWithError.toString()
+        def continueWithErrorValue = grailsApplication.config.mongogee.continueWithError.toString()
         if (continueWithErrorValue) {
             mongogeeServiceBean.continueWithError = continueWithErrorValue.toBoolean()
         }
@@ -89,7 +89,7 @@ class MongogeeGrailsPlugin extends Plugin {
         }
         log.info "set mongogeeService mongoDbUrl = ${mongoDbUrl}"
 
-        mongogeeServiceBean.changeLogsScanPackage = grailsApplication.config.mongoSea.changeLogsScanPackage.toString()
+        mongogeeServiceBean.changeLogsScanPackage = grailsApplication.config.mongogee.changeLogsScanPackage.toString()
         if (!mongogeeServiceBean.changeLogsScanPackage) {
             throw new MongogeeException('changeLogsScanPackage value not set')
         }

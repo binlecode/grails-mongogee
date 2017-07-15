@@ -28,7 +28,7 @@ class ChangeEntry {
 
     static mapWith = 'mongo'
     static mapping = {
-        collection 'mongoseaChangeEntry'
+        collection 'mongogeeChangeEntry'
         version true
         changeSetId index: true
         changeLogClassName index: true

@@ -12,7 +12,6 @@ import java.lang.reflect.Method
 
 @Slf4j
 class MongogeeService {
-    def grailsApplication  // autowired by Grails
     def mongo  // autowired by Grails
 
     MongoDatabase mongoDatabase
@@ -170,8 +169,12 @@ class MongogeeService {
     }
 
     protected ChangeEntryLog buildChangeEntryLog(ChangeEntry changeEntry) {
-        ChangeEntryLog cel = new ChangeEntryLog()
-        cel.properties = changeEntry.properties
+        ChangeEntryLog cel = new ChangeEntryLog(
+                changeLogClassName: changeEntry.changeLogClassName,
+                changeSetMethodName: changeEntry.changeSetMethodName,
+                author: changeEntry.author,
+                changeSetId: changeEntry.changeSetId
+        )
         return cel
     }
 

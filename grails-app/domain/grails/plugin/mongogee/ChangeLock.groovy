@@ -20,7 +20,7 @@ class ChangeLock {
 
     static mapWith = 'mongo'
     static mapping = {
-        collection 'mongoseaChangeLock'
+        collection 'mongogeeChangeLock'
     }
 
     static boolean acquireLock() {

@@ -24,7 +24,7 @@ class ChangeEntryLog {
 
     static mapWith = 'mongo'
     static mapping = {
-        collection 'mongoseaChangeEntryLog'
+        collection 'mongogeeChangeEntryLog'
         version false
         changeSetId index: true
         changeLogClassName index: true   // support filter by changeLogClass

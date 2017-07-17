@@ -4,7 +4,7 @@ MongoDB data migration Grails Plugin.
 
  
  * INTRODUCTION 
-===============
+---
 
 Mongogee Grails plugin is a simple, secure service for mongodb data migration management.
 This plugin is inspired by Mongobee (https://github.com/mongobee/mongobee) MongoDB data migration toolset.
@@ -14,7 +14,8 @@ This plugin is inspired by Mongobee (https://github.com/mongobee/mongobee) Mongo
 This repository contains source code of Mongogee, and a testing sample host Grails application.
 
  * INSTALL
-==================
+---
+
 In host Grails application's build.gradle file:
 
 	plugins {
@@ -25,14 +26,15 @@ In host Grails application's build.gradle file:
 
 
  * PREREQUISITES
-================
+---
 
 Hosting Grails application version 3.0+.
 
 
 
  * CONFIGURATION
-=============================
+---
+
 In host Grails application grails-app/conf/application.yml
 
 	mongogee
@@ -44,7 +46,8 @@ In host Grails application grails-app/conf/application.yml
 
 
  * WRITE MIGRATION AND RUN
-===========================
+---
+
 Adopting and extending Mongobee (https://github.com/mongobee/mongobee) annotations. There are two level of migration change units: change-logs (class level) and change-sets (method level). 
 	
 Some examples are below:
@@ -83,12 +86,13 @@ Some examples are below:
 
 
  * CONTRIBUTORS
-================
+---
+
 Bin Le (bin.le.code@gmail.com)
 
 
  * LICENSE
-===========
+---
 
 Apache License Version 2.0. (http://www.apache.org/licenses/)
 

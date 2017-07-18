@@ -12,7 +12,10 @@ class ChangeLock {
     Date dateCreated
     Date lastUpdated
     String id
+    /** locking status, 'LOCKED' or 'FREE' */
     String status
+    /** name or ip of the host node */
+    String host = 'localhost'
 
     static constraints = {
         status inList: [STATUS_LOCKED, STATUS_FREE], unique: true
@@ -33,9 +36,10 @@ class ChangeLock {
             ChangeLock.withNewTransaction {
                 ChangeLock changeLock = this.findByStatus(STATUS_FREE)
                 if (!changeLock) {
-                    changeLock = new ChangeLock(status: STATUS_LOCKED)
+                    changeLock = new ChangeLock(status: STATUS_LOCKED, host: getHostName())
                 } else {
                     changeLock.status = STATUS_LOCKED
+                    changeLock.host = getHostName()
                 }
                 changeLock.save(failOnError: true, flush: true)
             }
@@ -64,6 +68,10 @@ class ChangeLock {
             log.error "changeLock releasing failed: ${ex.message ?: ex.toString()}"
         }
         return false
+    }
+
+    static protected getHostName() {
+        InetAddress.getLocalHost().getHostName()
     }
 
 }

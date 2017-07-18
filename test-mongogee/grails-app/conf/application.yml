@@ -136,6 +136,6 @@ environments:
 
 # mongogee plugin
 mongogee:
-    changeEnabled: true
-    continueWithError: true
+    changeEnabled: true       # default to true
+    continueWithError: false  # default to false
     changeLogsScanPackage: 'test.mongogee.datamigration'

@@ -14,7 +14,7 @@ plugins {
 }
 
 
-version "0.1"
+version "0.3"
 group "org.grails.plugins"
 
 apply plugin:"eclipse"
@@ -53,18 +53,18 @@ bootRun {
 }// enable if you wish to package this plugin as a standalone application
 bootRepackage.enabled = false
 grailsPublish {
-    // TODO: Provide values here
-    user = 'user'
-    key = 'key'
-    githubSlug = 'foo/bar'
+    // load bintray user and key from jvm -Dvar for security
+    user = System.getProperty('bintrayUser')
+    key = System.getProperty('bintrayKey')
+    githubSlug = 'ikaliZpet/mongogee'
     license {
         name = 'Apache-2.0'
     }
-    title = "My Plugin"
-    desc = "Full plugin description"
-    developers = [johndoe:"John Doe"]
-    portalUser = ""
-    portalPassword = ""    
+    title = "Mongogee Grails Plugin"
+    desc = "Mongogee is a Grails plugin for MongoDB data migration management"
+    developers = [binle: "Bin Le"]
+//    portalUser =
+//    portalPassword =
 }
 
 artifactory {

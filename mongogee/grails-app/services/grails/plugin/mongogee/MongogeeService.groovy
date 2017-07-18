@@ -34,28 +34,31 @@ class MongogeeService {
 
     def execute() {
         if (!changeEnabled) {
-            log.info 'MongoSea is disabled, skipping data migration.'
+            log.info 'Mongogee is disabled, skipping data migration.'
             return false
         }
 
+        // if change is enabled, if locking failed, then app boot-up should be stopped
         if (!ChangeLock.acquireLock()) {
-            log.info "MongoSea can not acquire process lock. Exiting."
-            return false
+            def exMsg = 'Mongogee can not acquire process lock while migration is enabled.'
+            log.info exMsg
+            log.info('Quiting application boot-up.')
+            throw new MongogeeException(exMsg)
         }
 
-        log.info "MongoSea acquired process lock, starting the data migration sequence..."
+        log.info "Mongogee acquired process lock, starting the data migration sequence..."
 
         String errMsg
         try {
             executeMigration()
-            log.info "MongoSea data migration has completed."
+            log.info "Mongogee data migration has completed."
         } catch (ex) {
-            errMsg = "MongoSea data migration failed: ${ex.message ?: ex.toString()}"
+            errMsg = "Mongogee data migration failed: ${ex.message ?: ex.toString()}"
             log.error errMsg, ex
         } finally {
-            log.info "MongoSea is releasing process lock."
+            log.info "Mongogee is releasing process lock."
             ChangeLock.releaseLock()
-            log.info "MongoSea has released process lock."
+            log.info "Mongogee has released process lock."
         }
 
         if (errMsg) {

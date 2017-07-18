@@ -8,13 +8,7 @@ buildscript {
     }
 }
 
-plugins {
-    // for artifactory publishing support
-    id "com.jfrog.artifactory" version "4.4.13"
-}
-
-
-version "0.3"
+version "0.4"
 group "org.grails.plugins"
 
 apply plugin:"eclipse"
@@ -65,24 +59,4 @@ grailsPublish {
     developers = [binle: "Bin Le"]
 //    portalUser =
 //    portalPassword =
-}
-
-artifactory {
-    contextUrl = 'http://artifactory.construction.com:8081/artifactory'
-    publish {
-        defaults {
-            publications('maven')
-            publishArtifacts = true
-            publishPom = true
-        }
-        repository {
-            repoKey = "plugins-release-local"
-            username = "jenkins"
-            password = "notthepassword"
-        }
-    }
-}
-
-artifactoryPublish {
-    dependsOn sourcesJar, javadocJar
 }

@@ -101,6 +101,8 @@ class MongogeeService {
 
         ChangeEntry existingChangeEntry = ChangeEntry.findByChangeSetId(changeEntry.changeSetId)
 
+        //todo: try-catch the invocation so the error/exp msg can be saved to changeEntryLog domain record
+
         if (!existingChangeEntry) {
             log.info "applying new changeSet: $changeEntry"
             invokeChangeSetMethod(changeSetMethod, changeLogInstance)

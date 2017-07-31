@@ -17,7 +17,7 @@ This repository contains source code of Mongogee, and a testing sample host Grai
 In host Grails application's build.gradle file:
 
 	plugins {
-    	compile ':mongogee:$version' // current: 1.0.0
+    	compile ':mongogee:$version' // current: 0.6
 	}
 
 

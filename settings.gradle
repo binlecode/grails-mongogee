@@ -1,1 +1,1 @@
-include 'test-mongogee', 'mongogee'
+include 'mongogee', 'test-g3-mongodb'

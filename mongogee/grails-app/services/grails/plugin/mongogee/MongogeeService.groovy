@@ -32,18 +32,60 @@ class MongogeeService {
      */
     Boolean continueWithError = false
 
+    /**
+     * If true, migration locking will be retried, default to true
+     */
+    Boolean lockingRetryEnabled = true
+    /**
+     * Time interval between migration locking retrials, default to 5s
+     */
+    Integer lockingRetryIntervalMillis = 5000
+    /**
+     * Max number of migration locking retries, default to 120, aka 10min
+     */
+    Integer lockingRetryMax = 120
+
     def execute() {
         if (!changeEnabled) {
             log.info 'Mongogee is disabled, skipping data migration.'
             return false
         }
 
+
         // if change is enabled, if locking failed, then app boot-up should be stopped
+        log.info 'Mongogee is enabled, trying to acquire migration lock'
         if (!ChangeLock.acquireLock()) {
-            def exMsg = 'Mongogee can not acquire process lock while migration is enabled.'
-            log.info exMsg
-            log.info('Quiting application boot-up.')
-            throw new MongogeeException(exMsg)
+            log.info 'try migration locking failed'
+
+            boolean lockAcquired = false
+
+            if (lockingRetryEnabled) {
+                def numberOfRetrails = 1
+                while (numberOfRetrails <= lockingRetryMax) {
+                    numberOfRetrails += 1
+
+                    log.info "wait for ${lockingRetryIntervalMillis/1000}s before retry migration locking \n ..."
+                    new Object().sleep(lockingRetryIntervalMillis) {
+                        log.info "received interruption"
+                        false   // ignore interruption if set to false
+                    }
+
+                    log.info "retry migration locking for the $numberOfRetrails time"
+                    if (ChangeLock.acquireLock()) {
+                        lockAcquired = true
+                        log.info "retry locking successful"
+                        break
+                    } else {
+                        log.info "retry locking failed"
+                    }
+                }
+            }
+
+            if (!lockAcquired) {
+                def exMsg = 'Mongogee can not acquire process lock while migration is enabled. Quiting application boot-up.'
+                log.warn(exMsg)
+                throw new MongogeeException(exMsg)
+            }
         }
 
         log.info "Mongogee acquired process lock, starting the data migration sequence..."

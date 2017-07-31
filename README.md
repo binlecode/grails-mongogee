@@ -28,25 +28,25 @@ Hosting Grails application version 3.0+.
 
 ## CONFIGURATION
 
-
 In host Grails application grails-app/conf/application.yml
 
-	mongogee
-		changeEnabled: true 		# default is true
-		continueWithError: false 	# default is false
-		changeLogsScanPackage: <migration-class-package-path>  # required, no default value
+```yaml
+mongogee:
+    changeEnabled: true 		          # default is true
+    continueWithError: false 	          # default is false
+    changeLogsScanPackage: 'some.package' # required, no default value
+    lockingRetryEnabled: false            # default to true
+    lockingRetryIntervalMillis: 3000      # default to 5s
+    lockingRetryMax: 60                   # default to 120, aka 10min
+```
 	 	
-       
+## WRITE MIGRATION CHANGES
 
+Adopting and extending Mongobee (https://github.com/mongobee/mongobee) annotations. There are two level of migration change units: change-logs (class level) and change-sets (method level).
+Change-logs can be written in either Java or Groovy. Some groovy examples are below:
 
-## WRITE MIGRATION AND RUN
-
-
-Adopting and extending Mongobee (https://github.com/mongobee/mongobee) annotations. There are two level of migration change units: change-logs (class level) and change-sets (method level). 
-	
-Some examples are below:
-
-	@ChangeLog(order = '001')
+```groovy
+@ChangeLog(order = '001')
 	class MongogeeTestChangeLog {
 	
 	    @ChangeSet(author = "testuserA", id = "test1", order = "01")
@@ -76,8 +76,28 @@ Some examples are below:
 	        println 'invoke test for env test'
 	    }
 	}
+```
+	
     
+## RUN MIGRATION
 
+Add following to init/BootStrap.groovy
+
+```groovy
+class BootStrap {
+
+    MongogeeService mongogeeService
+
+    def init = { servletContext ->
+        // ...
+
+        mongogeeService.execute()
+
+    }
+
+    // ...
+}
+```
 
 ## CONTRIBUTORS
 

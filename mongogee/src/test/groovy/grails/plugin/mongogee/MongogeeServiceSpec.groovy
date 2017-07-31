@@ -41,7 +41,7 @@ class MongogeeServiceSpec extends Specification {
         setup:
         mongogeeService.changeEnabled = true
         mongogeeService.metaClass.executeMigration = { ->
-            log.info 'mock executeMigration() => throw exception'
+            println 'mock executeMigration() => throw exception'
             throw new MongogeeException("Test exception for MongogeeService#executeMigration")
         }
         when:
@@ -58,6 +58,33 @@ class MongogeeServiceSpec extends Specification {
         then: 'exception is thrown, and no return'
         thrown(MongogeeException)
         result2 == null
+    }
+
+    void "test lock fail retrying logic"() {
+        setup:
+        ChangeLock.metaClass.'static'.acquireLock = { ->
+            println 'mock ChangeLock.acquireLock() = false'
+            false
+        }
+        mongogeeService.metaClass.executeMigration = { ->
+            println 'mock executeMigration() => true'
+            return true
+        }
+        when:  'retry is disabled'
+        mongogeeService.lockingRetryEnabled = false
+        mongogeeService.execute()
+        then:  'fail immediately'
+        def ex = thrown(MongogeeException)
+        ex.message.startsWith('Mongogee can not acquire process lock while migration is enabled')
+
+        when: 'retry is enabled'
+        mongogeeService.lockingRetryEnabled = true
+        mongogeeService.lockingRetryMax = 2
+        mongogeeService.lockingRetryIntervalMillis = 100
+        mongogeeService.execute()
+        then: 'fail after retrial max reached'
+        ex = thrown(MongogeeException)
+        ex.message.startsWith('Mongogee can not acquire process lock while migration is enabled')
     }
 
 

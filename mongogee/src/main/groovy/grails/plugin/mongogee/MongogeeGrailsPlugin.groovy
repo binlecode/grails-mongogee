@@ -62,6 +62,9 @@ class MongogeeGrailsPlugin extends Plugin {
     }
 
     void doWithDynamicMethods() {
+    }
+
+    void doWithApplicationContext() {
 
         def mongogeeServiceBean = applicationContext.mongogeeService
         def enabledValue = grailsApplication.config.mongogee.changeEnabled.toString()
@@ -95,10 +98,24 @@ class MongogeeGrailsPlugin extends Plugin {
         }
         log.info "set mongogeeService.changeLogsScanPackage = ${mongogeeServiceBean.changeLogsScanPackage}"
 
-    }
+        def lockingRetryEnabled = grailsApplication.config.mongogee.lockingRetryEnabled.toString()
+        if (lockingRetryEnabled) {
+            mongogeeServiceBean.lockingRetryEnabled = Boolean.parseBoolean(lockingRetryEnabled)
+        }
+        log.info "set mongogeeService.lockingRetryEnabled = ${mongogeeServiceBean.lockingRetryEnabled}"
 
-    void doWithApplicationContext() {
-        // TODO Implement post initialization spring config (optional)
+        def lockingRetryIntervalMillis = grailsApplication.config.mongogee.lockingRetryIntervalMillis
+        if (lockingRetryIntervalMillis) {
+            mongogeeServiceBean.lockingRetryIntervalMillis = lockingRetryIntervalMillis
+        }
+        log.info "set mongogeeService.lockingRetryIntervalMillis = ${mongogeeServiceBean.lockingRetryIntervalMillis}"
+
+        def lockingRetryMax = grailsApplication.config.mongogee.lockingRetryMax
+        if (lockingRetryMax) {
+            mongogeeServiceBean.lockingRetryMax = lockingRetryMax
+        }
+        log.info "set mongogeeService.lockingRetryMax = ${mongogeeServiceBean.lockingRetryMax}"
+
     }
 
     void onChange(Map<String, Object> event) {

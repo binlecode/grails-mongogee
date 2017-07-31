@@ -1,7 +1,7 @@
 # mongogee
 MongoDB data migration Grails Plugin.
 
-TravisCI status: [![Build Status](https://travis-ci.org/ikaliZpet/mongogee.svg?branch=master)](https://travis-ci.org/ikaliZpet/mongogee)
+TravisCI [![Build Status](https://travis-ci.org/binlecode/mongogee.svg?branch=master)](https://travis-ci.org/binlecode/mongogee)
  
 ## INTRODUCTION 
 

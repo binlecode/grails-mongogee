@@ -220,7 +220,8 @@ class MongogeeService {
                 changeLogClassName: changeEntry.changeLogClassName,
                 changeSetMethodName: changeEntry.changeSetMethodName,
                 author: changeEntry.author,
-                changeSetId: changeEntry.changeSetId
+                changeSetId: changeEntry.changeSetId,
+                host: ChangeLock.getHostName()
         )
         return cel
     }

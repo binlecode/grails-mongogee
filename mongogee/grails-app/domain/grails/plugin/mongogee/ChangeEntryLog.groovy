@@ -17,6 +17,7 @@ class ChangeEntryLog {
     String changeSetMethodName
     String changeSetId
     String author
+    String host = 'localhost'
 
     static constraints = {
         author nullable: true

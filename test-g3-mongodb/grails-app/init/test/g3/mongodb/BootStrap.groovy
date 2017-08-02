@@ -11,7 +11,7 @@ class BootStrap {
 
         log.info "mongodb url: ${grailsApplication.config.grails.mongodb.url}"
 
-        log.info "mongogee.changeLogsScanPackage: ${grailsApplication.config.grails.mongogee.changeLogsScanPackage}"
+        log.info "mongogee.changeLogsScanPackage: ${grailsApplication.config.mongogee.changeLogsScanPackage}"
         log.info "mongogee.changeEnabled: ${grailsApplication.config.mongogee.changeEnabled}"
         log.info "mongogee.continueWithError: ${grailsApplication.config.mongogee.continueWithError}"
         log.info "mongogee.lockingRetryEnabled: ${grailsApplication.config.mongogee.lockingRetryEnabled}"

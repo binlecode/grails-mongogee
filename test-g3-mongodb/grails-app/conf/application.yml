@@ -107,6 +107,9 @@ environments:
         dataSource:
             dbCreate: update
             url: jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
+        grails:
+            mongodb:
+                url: "mongodb://localhost/test_mongogee_test"
     production:
         dataSource:
             dbCreate: none
@@ -129,6 +132,9 @@ environments:
                 testOnReturn: false
                 jdbcInterceptors: ConnectionState
                 defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
+        grails:
+            mongodb:
+                url: "mongodb://localhost/test_mongogee"
 
 mongogee:
     changeLogsScanPackage: 'test.g3.mongodb.datamigration'

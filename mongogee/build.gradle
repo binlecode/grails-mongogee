@@ -48,8 +48,8 @@ bootRun {
 bootRepackage.enabled = false
 grailsPublish {
     // load bintray user and key from jvm -Dvar for security
-    user = System.getProperty('bintrayUser')
-    key = System.getProperty('bintrayKey')
+    user = System.getenv('BINTRAY_USER') ?: System.getProperty('bintrayUser')
+    key = System.getenv('BINTRAY_KEY') ?: System.getProperty('bintrayKey')
     githubSlug = 'ikaliZpet/mongogee'
     license {
         name = 'Apache-2.0'

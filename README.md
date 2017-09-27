@@ -17,7 +17,7 @@ This repository contains source code of Mongogee, and a testing sample host Grai
 In host Grails application's build.gradle file:
 
 	plugins {
-    	compile ':mongogee:$version' // current: 0.6
+    	compile ':mongogee:$version'
 	}
 
 
@@ -81,7 +81,9 @@ Change-logs can be written in either Java or Groovy. Some groovy examples are be
     
 ## RUN MIGRATION
 
-Add following to init/BootStrap.groovy
+**Version 0.9 and up:** The manual line adding below is no longer needed. Mongogee migration service will be executed automatically if `changeEnabled` is set to `true` (which is also default).
+
+**Version 0.8 and below:** Add following to init/BootStrap.groovy
 
 ```groovy
 class BootStrap {

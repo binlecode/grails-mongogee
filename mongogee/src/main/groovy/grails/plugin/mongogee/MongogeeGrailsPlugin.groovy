@@ -116,6 +116,8 @@ class MongogeeGrailsPlugin extends Plugin {
         }
         log.info "set mongogeeService.lockingRetryMax = ${mongogeeServiceBean.lockingRetryMax}"
 
+        // ** execute migration service if enabled **
+        mongogeeServiceBean.execute()
     }
 
     void onChange(Map<String, Object> event) {

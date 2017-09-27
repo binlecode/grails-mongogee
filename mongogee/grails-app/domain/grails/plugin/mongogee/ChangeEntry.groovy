@@ -20,6 +20,8 @@ class ChangeEntry {
     String changeSetMethodName
     String changeSetId
     String author
+    /** total count of runs for this change entry */
+    Long runCount = 1L
 
     static constraints = {
         changeSetId blank: false, unique: true

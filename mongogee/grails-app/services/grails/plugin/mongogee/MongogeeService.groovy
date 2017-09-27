@@ -163,6 +163,7 @@ class MongogeeService {
                 if (changeEntry.author) {
                     existingChangeEntry.author = changeEntry.author
                 }
+                existingChangeEntry.runCount += 1
                 existingChangeEntry.save(failOnError: true, flush: true)
                 buildChangeEntryLog(existingChangeEntry).save(failOnError: true, flush: true)
             }

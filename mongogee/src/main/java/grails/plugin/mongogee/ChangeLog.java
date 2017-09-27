@@ -22,6 +22,7 @@ public @interface ChangeLog {
      * @return order
      */
     String order() default "";
+    String release() default "";
 
     //todo: add dependOn field
 }

@@ -29,4 +29,9 @@ class Dm001 {
         Document.collection.insert(name: "document at ${new Date()}")
     }
 
+    @ChangeSet(order = '003', id = '001.003.loadDocumentDataWithException', author = 'test-mongogee-app', runAlways = true)
+    def loadDocumentDataWithException() {
+        throw new RuntimeException('Test exception thrown from changeSet: 001.003.loadDocumentDataWithException')
+    }
+
 }

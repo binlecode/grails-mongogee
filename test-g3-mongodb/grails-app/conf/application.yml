@@ -139,7 +139,7 @@ environments:
 mongogee:
     changeLogsScanPackage: 'test.g3.mongodb.datamigration'
     changeEnabled: true                 # default to true
-    continueWithError: false            # default to false
+    continueWithError: true             # default to false
 #    lockingRetryEnabled: false          # default to true
     lockingRetryIntervalMillis: 3000    # default to 5s
     lockingRetryMax: 3                  # default to 120, aka 10min

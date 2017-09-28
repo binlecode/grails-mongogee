@@ -19,8 +19,13 @@ class ChangeEntryLog {
     String author
     String host = 'localhost'
 
+    String status
+    String message
+
     static constraints = {
         author nullable: true
+        status nullable: true, inList: ['success', 'fail']
+        message nullable: true
     }
 
     static mapWith = 'mongo'

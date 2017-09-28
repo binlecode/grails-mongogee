@@ -135,42 +135,65 @@ class MongogeeService {
         }
     }
 
+    /**
+     * Apply change with given changeSet method and changeLog object.
+     *
+     * @param changeSetMethod  {@link java.lang.reflect.Method} instance whose definition is {@link ChangeSet} annotated
+     * @param changeLogInstance  changeLog instance whose definition is {@link ChangeLog} annotated
+     * @param changeAgent  {@link ChangeAgent} instance
+     */
     protected applyChangeSet(Method changeSetMethod, changeLogInstance, ChangeAgent changeAgent) {
         ChangeEntry changeEntry = buildChangeEntry(changeSetMethod)
         if (!changeEntry) {
-            return // return from current iteration
+            return
         }
 
         ChangeEntry existingChangeEntry = ChangeEntry.findByChangeSetId(changeEntry.changeSetId)
 
-        //todo: try-catch the invocation so the error/exp msg can be saved to changeEntryLog domain record
-
         if (!existingChangeEntry) {
             log.info "applying new changeSet: $changeEntry"
-            invokeChangeSetMethod(changeSetMethod, changeLogInstance)
-
-            ChangeEntry.withNewTransaction {
-                changeEntry.save(failOnError: true, flush: true)
-                buildChangeEntryLog(changeEntry).save(failOnError: true, flush: true)
-            }
-            log.info " ... changeSet applied"
+            invokeChangeSetWithEntry(changeSetMethod, changeEntry, changeLogInstance)
 
         } else if (changeAgent.isRunAlwaysChangeSet(changeSetMethod)) {
-            log.info "reapplying changeSet: $changeEntry"
-            invokeChangeSetMethod(changeSetMethod, changeLogInstance)
 
-            ChangeEntry.withNewTransaction {
-                if (changeEntry.author) {
-                    existingChangeEntry.author = changeEntry.author
-                }
-                existingChangeEntry.runCount += 1
-                existingChangeEntry.save(failOnError: true, flush: true)
-                buildChangeEntryLog(existingChangeEntry).save(failOnError: true, flush: true)
+            // merge changeEntry into existing changeEntry and update other attributes
+            if (changeEntry.author) {
+                existingChangeEntry.author = changeEntry.author
             }
-            log.info " ... changeSet reapplied"
+            existingChangeEntry.runCount += 1
+            changeEntry = existingChangeEntry
+
+            log.info "reapplying existing changeSet: $changeEntry"
+            invokeChangeSetWithEntry(changeSetMethod, changeEntry, changeLogInstance)
 
         } else {
             log.info "changeSet skipped: $changeEntry"
+        }
+    }
+
+    /**
+     * Invoke the chagneSet, save changeEntry info, and log success or failure, when there's exception, the exception
+     * is saved to change entry log, and then bubbled up to main execution flow.
+     */
+    protected invokeChangeSetWithEntry(Method changeSetMethod, ChangeEntry changeEntry, changeLogInstance) {
+        try {
+            invokeChangeSetMethod(changeSetMethod, changeLogInstance)
+            log.info "changeSet invoked"
+
+            ChangeEntry.withNewTransaction {
+                changeEntry.save(failOnError: true, flush: true)
+                def changeEntryLog = buildChangeEntryLog(changeEntry).save(failOnError: true)
+                log.debug "changeEntry saved [id: ${changeEntry.id}], and logged [id: ${changeEntryLog.id}]"
+            }
+        } catch (ex) {
+            log.error "changeSet invocation error: ${ex.message ?: ex.toString().take(255)}"
+            // save error information to change entry log
+            ChangeEntryLog.withNewTransaction {
+                def changeEntryLog = buildChangeEntryErrorLog(changeEntry, ex).save(failOnError: true)
+                log.debug "changeSet invocation error logged [id: ${changeEntryLog.id}]"
+            }
+            // bubble exp to main flow
+            throw ex
         }
     }
 
@@ -202,6 +225,13 @@ class MongogeeService {
         }
     }
 
+    /**
+     * Builds a change entry object from the input annotated {@link ChangeSet} method.
+     * If the input method is not valid, return null.
+     *
+     * @param changeSetMethod   {@link ChangeSet} annotated {@link java.lang.reflect.Method} object
+     * @return {@link ChangeEntry} object, or null
+     */
     protected ChangeEntry buildChangeEntry(Method changeSetMethod) {
         if (changeSetMethod.isAnnotationPresent(ChangeSet.class)) {
             ChangeSet annotation = changeSetMethod.getAnnotation(ChangeSet.class)
@@ -224,6 +254,13 @@ class MongogeeService {
                 changeSetId: changeEntry.changeSetId,
                 host: ChangeLock.getHostName()
         )
+        return cel
+    }
+
+    protected ChangeEntryLog buildChangeEntryErrorLog(ChangeEntry changeEntry, Exception exp) {
+        ChangeEntryLog cel = buildChangeEntryLog(changeEntry)
+        cel.status = 'fail'
+        cel.message = exp.message ?: exp.toString().take(255)
         return cel
     }
 

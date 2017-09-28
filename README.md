@@ -104,7 +104,7 @@ class BootStrap {
 ## CHANGE LOG
 
 #### v 0.9.1
-- issue-11: change entry log can intercept and save exception during change set invocation, and then bubble back to main execution flow  
+- issue-11: change entry log can intercept and save exception error information during change set invocation, and then bubble up back to main execution flow  
 
 #### v 0.9
 - issue-9: simplify hosting app to save the manual line adding in host app bootstrap.groovy

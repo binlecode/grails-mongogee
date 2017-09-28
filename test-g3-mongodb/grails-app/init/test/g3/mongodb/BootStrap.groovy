@@ -1,11 +1,9 @@
 package test.g3.mongodb
 
 import grails.core.GrailsApplication
-import grails.plugin.mongogee.MongogeeService
 
 class BootStrap {
     GrailsApplication grailsApplication
-    MongogeeService mongogeeService
 
     def init = { servletContext ->
 
@@ -17,9 +15,6 @@ class BootStrap {
         log.info "mongogee.lockingRetryEnabled: ${grailsApplication.config.mongogee.lockingRetryEnabled}"
         log.info "mongogee.lockingRetryIntervalMillis: ${grailsApplication.config.mongogee.lockingRetryIntervalMillis}"
         log.info "mongogee.lockingRetryMax: ${grailsApplication.config.mongogee.lockingRetryMax}"
-
-        mongogeeService.execute()
-
     }
 
     def destroy = {

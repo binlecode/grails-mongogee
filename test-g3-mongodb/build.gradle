@@ -10,7 +10,7 @@ buildscript {
     }
 }
 
-version "0.1"
+version "0.2"
 group "test.g3.mongodb"
 
 apply plugin:"eclipse"

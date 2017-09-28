@@ -101,6 +101,22 @@ class BootStrap {
 }
 ```
 
+## CHANGE LOG
+
+#### v 0.9.1
+- issue-11: change entry log can intercept and save exception during change set invocation, and then bubble back to main execution flow  
+
+#### v 0.9
+- issue-9: simplify hosting app to save the manual line adding in host app bootstrap.groovy
+
+#### v 0.8
+- issue-4: add run-count support in changeEntry persistence for those repeatable changeSets
+
+#### v 0.7 and under
+- issue-3: add loop/lock-retry ability to application start-up
+
+
+
 ## CONTRIBUTORS
 
 Bin Le (bin.le.code@gmail.com)

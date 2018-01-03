@@ -103,6 +103,12 @@ class BootStrap {
 
 ## CHANGE LOG
 
+#### v 0.9.2
+- issue-18: add an ```continueWithError``` optional attribute to changeSet, so that:
+    - when a changeSet causes an error, the execution logic can decide whether to continue to next changeSet or halt
+    - default should be false, as this is the general case that the successive migration changeSets should be stopped
+    - this attribute should be used with caution and mainly for those changeSets not causing contextual impacts
+
 #### v 0.9.1
 - issue-11: change entry log can intercept and save exception error information during change set invocation, and then bubble up back to main execution flow  
 

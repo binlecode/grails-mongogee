@@ -25,9 +25,16 @@ class DmService001Service {
         }
     }
 
-    @ChangeSet(order = '002', id = '002.002 test load-doc method name wild!', author = 'test-mongogee-app', runAlways = true)
+    @ChangeSet(order = '002', id = '002.002 test method with error', author = 'test-mongogee-app', runAlways = true, continueWithError = true)
+//    @ChangeSet(order = '002', id = '002.002 test method with error', author = 'test-mongogee-app', runAlways = true)
+    def testLoadMethodWithError() {
+        log.info '002.002 test load method with error'
+        throw new RuntimeException('002.002 test load method with exception')
+    }
+
+    @ChangeSet(order = '003', id = '002.003 test load-doc method name wild!', author = 'test-mongogee-app', runAlways = true)
     def 'test load-doc method name wild!'() {
-        log.info "run changeset: test load-doc method name wild!"
+        log.info "run changeSet: test load-doc method name wild!"
     }
 
 }

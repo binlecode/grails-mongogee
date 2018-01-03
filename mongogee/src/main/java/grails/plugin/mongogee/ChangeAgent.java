@@ -68,6 +68,15 @@ public class ChangeAgent {
         }
     }
 
+    public boolean isContinueWithError(Method changesetMethod) {
+        if (changesetMethod.isAnnotationPresent(ChangeSet.class)) {
+            ChangeSet annotation = changesetMethod.getAnnotation(ChangeSet.class);
+            return annotation.continueWithError();
+        } else {
+            return false;
+        }
+    }
+
     private boolean matchesActiveGrailsEnvironment(AnnotatedElement element) {
         if (element.isAnnotationPresent(ChangeEnv.class)) {
             List<String> environments = asList(element.getAnnotation(ChangeEnv.class).value());

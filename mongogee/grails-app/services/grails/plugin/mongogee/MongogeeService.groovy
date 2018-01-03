@@ -168,7 +168,7 @@ class MongogeeService {
 
         if (!existingChangeEntry) {
             log.info "applying new changeSet: $changeEntry"
-            invokeChangeSetWithEntry(changeSetMethod, changeEntry, changeLogInstance)
+            invokeChangeSetWithEntry(changeSetMethod, changeEntry, changeLogInstance, changeAgent)
 
         } else if (changeAgent.isRunAlwaysChangeSet(changeSetMethod)) {
 
@@ -180,10 +180,31 @@ class MongogeeService {
             changeEntry = existingChangeEntry
 
             log.info "reapplying existing changeSet: $changeEntry"
-            invokeChangeSetWithEntry(changeSetMethod, changeEntry, changeLogInstance)
+            invokeChangeSetWithEntry(changeSetMethod, changeEntry, changeLogInstance, changeAgent)
 
         } else {
             log.info "changeSet skipped: $changeEntry"
+        }
+    }
+
+    /**
+     * A wrapper of {@link #invokeChangeSetWithEntry(Method, ChangeEntry, Object)} )}
+     * Invoke the changeSet with changeEntry info, and control error by changeSet annotation 'continueWithError'
+     * attribute.
+     */
+    protected invokeChangeSetWithEntry(
+            Method changeSetMethod, ChangeEntry changeEntry, changeLogInstance, ChangeAgent changeAgent) {
+        try {
+            invokeChangeSetWithEntry(changeSetMethod, changeEntry, changeLogInstance)
+        } catch (ex) {
+            if (changeAgent.isContinueWithError(changeSetMethod)) {
+                // log error msg and swallow exp
+                log.warn 'changeSet continueWithError = true => invocation error logged and migration continued'
+            } else {
+                // bubble up exp
+                log.warn 'changeSet continueWithError = false => invocation error bubbled and migration stopped'
+                throw ex
+            }
         }
     }
 
@@ -194,7 +215,7 @@ class MongogeeService {
     protected invokeChangeSetWithEntry(Method changeSetMethod, ChangeEntry changeEntry, changeLogInstance) {
         try {
             invokeChangeSetMethod(changeSetMethod, changeLogInstance)
-            log.info "changeSet invoked"
+            log.info "changeSet invoked: ${changeSetMethod.name}"
 
             ChangeEntry.withNewTransaction {
                 changeEntry.save(failOnError: true, flush: true)

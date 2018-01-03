@@ -63,6 +63,15 @@ public @interface ChangeSet {
      * @return should run always?
      */
     public boolean runAlways() default false;
+
+    /**
+     * Sets whether or not to continue migration with successive changeSets when there's
+     * an error in current changeSet
+     *
+     * @return boolean whether or not to continue with error
+     */
+    public boolean continueWithError() default false;
+
 //
 //  /**
 //   * Executes the change the first time it is seen and each time the change set has been changed. <br/>

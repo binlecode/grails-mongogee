@@ -1,4 +1,4 @@
-package test.g3.mongodb.datamigration
+package test.g3.mongodb.dm
 
 import grails.plugin.mongogee.ChangeLog
 import grails.plugin.mongogee.ChangeSet
@@ -26,9 +26,7 @@ class DmService001Service {
     }
 
     @ChangeSet(order = '002', id = '002.002 test method with error', author = 'test-mongogee-app', runAlways = true, continueWithError = true)
-//    @ChangeSet(order = '002', id = '002.002 test method with error', author = 'test-mongogee-app', runAlways = true)
     def testLoadMethodWithError() {
-        log.info '002.002 test load method with error'
         throw new RuntimeException('002.002 test load method with exception')
     }
 

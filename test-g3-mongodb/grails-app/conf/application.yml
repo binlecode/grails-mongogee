@@ -137,7 +137,10 @@ environments:
                 url: "mongodb://localhost/test_mongogee"
 
 mongogee:
-    changeLogsScanPackage: 'test.g3.mongodb.datamigration'
+    changeLogsScanPackage: 'test.g3.mongodb.datamigration, test.g3.mongodb.dm'
+#    changeLogsScanPackageList:
+#        - 'test.g3.mongodb.datamigration'
+#        - 'test.g3.mongodb.dm'
     changeEnabled: true                 # default to true
     continueWithError: true             # default to false
 #    lockingRetryEnabled: false          # default to true

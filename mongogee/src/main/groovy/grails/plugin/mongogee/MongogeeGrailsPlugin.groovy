@@ -67,13 +67,22 @@ class MongogeeGrailsPlugin extends Plugin {
     void doWithApplicationContext() {
 
         def mongogeeServiceBean = applicationContext.mongogeeService
-        def enabledValue = grailsApplication.config.mongogee.changeEnabled.toString()
+
+        /*
+         * A ConfigObject at a simple level is a Map that creates configuration entries (other ConfigObjects)
+         * when referencing them. This means that navigating to foo.bar.stuff will not return null but nested
+         * ConfigObjects which are of course empty maps The Groovy truth can be used to check for the existence
+         * of "real" entries.
+         */
+        ConfigObject mongogeeConfig = MongogeeConfigUtils.getMongogeeConfig()
+
+        def enabledValue = mongogeeConfig.changeEnabled.toString()
         if (enabledValue) {
             mongogeeServiceBean.changeEnabled = enabledValue.toBoolean()
         }
         log.info "set mongogeeService.changeEnabled = ${mongogeeServiceBean.changeEnabled}"
 
-        def continueWithErrorValue = grailsApplication.config.mongogee.continueWithError.toString()
+        def continueWithErrorValue = mongogeeConfig.continueWithError.toString()
         if (continueWithErrorValue) {
             mongogeeServiceBean.continueWithError = continueWithErrorValue.toBoolean()
         }
@@ -92,29 +101,31 @@ class MongogeeGrailsPlugin extends Plugin {
         }
         log.info "set mongogeeService mongoDbUrl = ${mongoDbUrl}"
 
-        mongogeeServiceBean.changeLogsScanPackageList = grailsApplication.config.getProperty(
-                'mongogee.changeLogsScanPackageList', List)
-        mongogeeServiceBean.changeLogsScanPackage = grailsApplication.config.getProperty(
-                'mongogee.changeLogsScanPackage', String)
+        if (mongogeeConfig.containsKey('changeLogsScanPackageList')) {
+            mongogeeServiceBean.changeLogsScanPackageList = mongogeeConfig.getProperty('changeLogsScanPackageList')
+            log.info "set mongogeeService.changeLogsScanPackageList = ${mongogeeServiceBean.changeLogsScanPackageList}"
+        }
+        if (mongogeeConfig.containsKey('changeLogsScanPackage')) {
+            mongogeeServiceBean.changeLogsScanPackage = mongogeeConfig.getProperty('changeLogsScanPackage')
+            log.info "set mongogeeService.changeLogsScanPackage = ${mongogeeServiceBean.changeLogsScanPackage}"
+        }
         if (!mongogeeServiceBean.changeLogsScanPackage && !mongogeeServiceBean.changeLogsScanPackageList) {
             throw new MongogeeException('changeLogsScanPackage or changeLogsScanPackageList value must be set')
         }
-        log.info "set mongogeeService.changeLogsScanPackage = ${mongogeeServiceBean.changeLogsScanPackage}"
-        log.info "set mongogeeService.changeLogsScanPackageList = ${mongogeeServiceBean.changeLogsScanPackageList}"
 
-        def lockingRetryEnabled = grailsApplication.config.mongogee.lockingRetryEnabled.toString()
+        def lockingRetryEnabled = mongogeeConfig.lockingRetryEnabled.toString()
         if (lockingRetryEnabled) {
             mongogeeServiceBean.lockingRetryEnabled = Boolean.parseBoolean(lockingRetryEnabled)
         }
         log.info "set mongogeeService.lockingRetryEnabled = ${mongogeeServiceBean.lockingRetryEnabled}"
 
-        def lockingRetryIntervalMillis = grailsApplication.config.mongogee.lockingRetryIntervalMillis
+        def lockingRetryIntervalMillis = mongogeeConfig.lockingRetryIntervalMillis
         if (lockingRetryIntervalMillis) {
             mongogeeServiceBean.lockingRetryIntervalMillis = lockingRetryIntervalMillis
         }
         log.info "set mongogeeService.lockingRetryIntervalMillis = ${mongogeeServiceBean.lockingRetryIntervalMillis}"
 
-        def lockingRetryMax = grailsApplication.config.mongogee.lockingRetryMax
+        def lockingRetryMax = mongogeeConfig.lockingRetryMax
         if (lockingRetryMax) {
             mongogeeServiceBean.lockingRetryMax = lockingRetryMax
         }

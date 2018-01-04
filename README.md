@@ -32,12 +32,12 @@ In host Grails application grails-app/conf/application.yml
 
 ```yaml
 mongogee:
-    changeEnabled: true 		          # default is true
-    continueWithError: false 	          # default is false
-    changeLogsScanPackage: 'some.package' # required, no default value
-    lockingRetryEnabled: false            # default to true
-    lockingRetryIntervalMillis: 3000      # default to 5s
-    lockingRetryMax: 60                   # default to 120, aka 10min
+    changeLogsScanPackage: 'some.package' # required, can be simple string or CSV with one or more path values
+    changeEnabled: true 		          # optional, default is true
+    continueWithError: false 	          # optional, default is false
+    lockingRetryEnabled: false            # optional, default to true
+    lockingRetryIntervalMillis: 3000      # optional, default to 5s
+    lockingRetryMax: 60                   # optional, default to 120, aka 10min
 ```
 	 	
 ## WRITE MIGRATION CHANGES
@@ -64,7 +64,7 @@ Change-logs can be written in either Java or Groovy. Some groovy examples are be
 	        println 'invoke runAlways'
 	    }
 	
-	    @ChangeSet(author = 'testuser', id = 'test4', order = '04')
+	    @ChangeSet(author = 'testuser', id = 'test4', order = '04', continueWithError = true)
 	    @ChangeEnv('development')
 	    void testChangeSetEnvDevelopment() {
 	        println 'invoke test for env development'
@@ -102,6 +102,9 @@ class BootStrap {
 ```
 
 ## CHANGE LOG
+
+#### v 0.9.4
+- issue-22: provide default configurations groovy file to support custom yml config in host application
 
 #### v 0.9.3
 - issue-13: support multiple scan package classpaths

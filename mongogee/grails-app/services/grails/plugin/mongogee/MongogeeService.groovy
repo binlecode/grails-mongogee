@@ -34,11 +34,20 @@ class MongogeeService {
     DB db
 
     /**
-     * base package path for data migration classes.
+     * simple or CSV string for one or more base package paths for data migration classes.
+     *
+     * If both {@link #changeLogsScanPackage} and {@link #changeLogsScanPackageList} are assigned,
+     * then {@link #changeLogsScanPackage} is used and {@link #changeLogsScanPackageList} is ignored.
      *
      * @see {@link ChangeLog} and {@link ChangeSet}
      */
     String changeLogsScanPackage
+    /**
+     * list of base package paths for data migration classes.
+     *
+     * @see {@link ChangeLog} and {@link ChangeSet}
+     */
+    List<String> changeLogsScanPackageList
     /**
      * data migration will be skipped if changeEnabled is set to false, default to true
      */
@@ -131,7 +140,12 @@ class MongogeeService {
 
     protected executeMigration() {
         try {
-            ChangeAgent changeAgent = new ChangeAgent(changeLogsScanPackage)
+            ChangeAgent changeAgent
+            if (changeLogsScanPackage) {
+                changeAgent = new ChangeAgent(changeLogsScanPackage)
+            } else {
+                changeAgent = new ChangeAgent(changeLogsScanPackageList)
+            }
             changeAgent.fetchChangeLogs().each { Class<?> changeLogClass ->
                 def changeLogInstance = changeLogClass.getConstructor().newInstance()
 

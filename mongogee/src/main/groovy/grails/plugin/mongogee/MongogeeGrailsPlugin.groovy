@@ -93,11 +93,15 @@ class MongogeeGrailsPlugin extends Plugin {
         }
         log.info "set mongogeeService mongoDbUrl = ${mongoDbUrl}"
 
-        mongogeeServiceBean.changeLogsScanPackage = grailsApplication.config.mongogee.changeLogsScanPackage.toString()
-        if (!mongogeeServiceBean.changeLogsScanPackage) {
-            throw new MongogeeException('changeLogsScanPackage value not set')
+        mongogeeServiceBean.changeLogsScanPackageList = grailsApplication.config.getProperty(
+                'mongogee.changeLogsScanPackageList', List)
+        mongogeeServiceBean.changeLogsScanPackage = grailsApplication.config.getProperty(
+                'mongogee.changeLogsScanPackage', String)
+        if (!mongogeeServiceBean.changeLogsScanPackage && !mongogeeServiceBean.changeLogsScanPackageList) {
+            throw new MongogeeException('changeLogsScanPackage or changeLogsScanPackageList value must be set')
         }
         log.info "set mongogeeService.changeLogsScanPackage = ${mongogeeServiceBean.changeLogsScanPackage}"
+        log.info "set mongogeeService.changeLogsScanPackageList = ${mongogeeServiceBean.changeLogsScanPackageList}"
 
         def lockingRetryEnabled = grailsApplication.config.mongogee.lockingRetryEnabled.toString()
         if (lockingRetryEnabled) {

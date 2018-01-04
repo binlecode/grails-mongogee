@@ -23,6 +23,7 @@ import org.reflections.Reflections;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
@@ -34,20 +35,49 @@ import static java.util.Arrays.asList;
  * @since 27/07/2014
  */
 public class ChangeAgent {
-    private final String changeLogsBasePackage;
+    private final Set<String> changeLogsBasePackageSet;
 
+    /**
+     * @param changeLogsBasePackage  single package path string or CSV string of multiple package paths
+     */
     public ChangeAgent(String changeLogsBasePackage) {
-        this.changeLogsBasePackage = changeLogsBasePackage;
+        if (changeLogsBasePackage != null) {
+            this.changeLogsBasePackageSet = Arrays.stream(changeLogsBasePackage.split(","))
+                    .map(String::trim)
+                    .collect(Collectors.toSet());
+        } else {
+            this.changeLogsBasePackageSet = null;
+        }
+    }
+
+    /**
+     * @param changeLogsBasePackages  collection of one or many package path strings
+     */
+    public ChangeAgent(Collection<String> changeLogsBasePackages) {
+        if (changeLogsBasePackages != null) {
+            this.changeLogsBasePackageSet = changeLogsBasePackages.stream()
+                    .map(String::trim)
+                    .collect(Collectors.toSet());
+        } else {
+            this.changeLogsBasePackageSet = null;
+        }
     }
 
     public List<Class<?>> fetchChangeLogs() {
+        List<Class<?>> changeLogs = new ArrayList<>();
+        if (this.changeLogsBasePackageSet != null) {
+            for (String basePackage : this.changeLogsBasePackageSet) {
+                changeLogs.addAll(fetchChangeLogsByPackage(basePackage));
+            }
+        }
+        Collections.sort(changeLogs, new ChangeLogComparator());
+        return changeLogs;
+    }
+
+    protected List<Class<?>> fetchChangeLogsByPackage(String changeLogsBasePackage) {
         Reflections reflections = new Reflections(changeLogsBasePackage);
         Set<Class<?>> changeLogs = reflections.getTypesAnnotatedWith(ChangeLog.class); // TODO remove dependency, do own method
-        List<Class<?>> filteredChangeLogs = (List<Class<?>>) filterByActiveGrailsEnvironment(changeLogs);
-
-        Collections.sort(filteredChangeLogs, new ChangeLogComparator());
-
-        return filteredChangeLogs;
+        return (List<Class<?>>) filterByActiveGrailsEnvironment(changeLogs);
     }
 
     public List<Method> fetchChangeSets(final Class<?> type) throws MongogeeChangeSetException {

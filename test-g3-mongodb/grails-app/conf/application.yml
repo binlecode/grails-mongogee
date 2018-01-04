@@ -144,7 +144,5 @@ mongogee:
     changeEnabled: true                 # default to true
     continueWithError: true             # default to false
 #    lockingRetryEnabled: false          # default to true
-    lockingRetryIntervalMillis: 3000    # default to 5s
-    lockingRetryMax: 3                  # default to 120, aka 10min
-
-
+#    lockingRetryIntervalMillis: 3000    # default to 5s
+#    lockingRetryMax: 3                  # default to 120

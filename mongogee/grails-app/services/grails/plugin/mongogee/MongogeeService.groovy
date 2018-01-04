@@ -56,7 +56,6 @@ class MongogeeService {
      * if true, the application boot-up will not be stopped by migration error, default to false
      */
     Boolean continueWithError = false
-
     /**
      * If true, migration locking will be retried, default to true
      */
@@ -66,7 +65,7 @@ class MongogeeService {
      */
     Integer lockingRetryIntervalMillis = 5000
     /**
-     * Max number of migration locking retries, default to 120, aka 10min
+     * Max number of migration locking retries, default to 120, eg. with 5s retry interval, the retry window is 10min
      */
     Integer lockingRetryMax = 120
 

@@ -103,6 +103,9 @@ class BootStrap {
 
 ## CHANGE LOG
 
+#### v 0.9.3
+- issue-13: support multiple scan package classpaths
+
 #### v 0.9.2
 - issue-18: add an ```continueWithError``` optional attribute to changeSet, so that:
     - when a changeSet causes an error, the execution logic can decide whether to continue to next changeSet or halt
